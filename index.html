@@ -190,32 +190,27 @@
                 </div>
             </div>
 
-            <!-- Sets Tracker -->
-            <div class="glass-panel p-5 rounded-2xl space-y-4">
-                <div class="flex items-center gap-2 mb-2 px-1">
-                    <input type="checkbox" id="use-bodyweight" class="w-5 h-5 accent-primary bg-zinc-900 border-zinc-700 rounded cursor-pointer">
-                    <label for="use-bodyweight" class="text-sm text-zinc-400 cursor-pointer">Eigengewicht nutzen (+<span id="display-bw">0</span>kg)</label>
-                </div>
-                
-                <div class="flex justify-between text-xs font-medium text-zinc-500 uppercase px-1">
-                    <span class="w-12 text-center">Satz</span>
-                    <span class="flex-1 text-center">Wdh.</span>
-                    <span class="flex-1 text-center">Zusatz (kg)</span>
-                    <span class="w-10"></span>
-                </div>
-                
-                <div id="sets-container" class="space-y-3">
-                    <!-- Sets will be injected here -->
-                </div>
-
-                <button onclick="addSet()" class="w-full py-3 rounded-xl border border-dashed border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition flex items-center justify-center gap-2">
-                    <i class="ph ph-plus-circle text-lg"></i> Satz hinzufügen
-                </button>
+            <!-- Bodyweight Toggle -->
+            <div class="flex items-center gap-3 p-4 glass-panel rounded-2xl mb-2">
+                <input type="checkbox" id="use-bodyweight" class="w-6 h-6 accent-primary bg-zinc-900 border-zinc-700 rounded cursor-pointer shrink-0">
+                <label for="use-bodyweight" class="text-base font-medium text-zinc-300 cursor-pointer flex-1">Eigengewicht nutzen (+<span id="display-bw">0</span>kg)</label>
+            </div>
+            
+            <!-- Sets Container -->
+            <div id="sets-container" class="space-y-4">
+                <!-- Sets will be injected here -->
             </div>
 
-            <button onclick="saveWorkout()" class="w-full py-4 bg-primary hover:bg-primaryHover text-white rounded-2xl font-semibold shadow-neon transition transform active:scale-95">
-                Übung Speichern
-            </button>
+            <!-- Actions -->
+            <div class="space-y-4 pt-2">
+                <button onclick="addSet()" class="w-full py-4 rounded-xl border-2 border-dashed border-zinc-700 text-zinc-300 hover:text-white hover:border-zinc-500 transition flex items-center justify-center gap-2 text-lg font-medium">
+                    <i class="ph ph-plus-circle text-2xl"></i> Satz hinzufügen
+                </button>
+
+                <button onclick="saveWorkout()" class="w-full py-5 bg-primary hover:bg-primaryHover text-white rounded-2xl font-bold text-lg shadow-neon transition transform active:scale-95">
+                    Übung Speichern
+                </button>
+            </div>
         </section>
 
 
@@ -613,17 +608,27 @@
             const setNumber = container.children.length + 1;
             
             const setRow = document.createElement('div');
-            setRow.className = 'set-row flex items-center gap-3 animate-[fadeIn_0.2s_ease]';
+            setRow.className = 'set-row relative glass-panel rounded-2xl p-5 animate-[fadeIn_0.2s_ease]';
             setRow.innerHTML = `
-                <div class="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-bold text-zinc-400 shrink-0">
-                    ${setNumber}
-                </div>
-                <input type="number" inputmode="numeric" min="0" placeholder="0" class="rep-input flex-1 px-3 py-3 text-center text-lg font-semibold" value="${reps}">
-                <div class="text-zinc-500 font-bold">x</div>
-                <input type="number" inputmode="decimal" min="0" step="0.5" placeholder="0.0" class="weight-input flex-1 px-3 py-3 text-center text-lg font-semibold" value="${weight}">
-                <button onclick="removeSet(this)" class="w-10 h-10 rounded-xl text-red-400 hover:bg-red-500/10 transition flex items-center justify-center shrink-0">
-                    <i class="ph ph-trash"></i>
+                <button onclick="removeSet(this)" class="absolute top-4 right-4 w-12 h-12 rounded-full bg-red-500/10 hover:bg-red-500/20 text-red-400 flex items-center justify-center transition">
+                    <i class="ph ph-trash text-2xl"></i>
                 </button>
+
+                <div class="mb-5">
+                    <p class="text-sm font-bold text-zinc-500 uppercase tracking-widest mb-1">Satz</p>
+                    <p class="text-4xl font-black text-white set-number-display">${setNumber}</p>
+                </div>
+
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-semibold text-zinc-400 mb-2 uppercase tracking-wide">Wiederholungen (WDH.)</label>
+                        <input type="number" inputmode="numeric" min="0" placeholder="0" class="rep-input w-full px-4 py-4 text-xl font-bold rounded-xl text-center" value="${reps}">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-zinc-400 mb-2 uppercase tracking-wide">Zusatzgewicht (KG)</label>
+                        <input type="number" inputmode="decimal" min="0" step="0.5" placeholder="0.0" class="weight-input w-full px-4 py-4 text-xl font-bold rounded-xl text-center" value="${weight}">
+                    </div>
+                </div>
             `;
             container.appendChild(setRow);
             updateSetNumbers();
@@ -641,7 +646,7 @@
 
         function updateSetNumbers() {
             document.querySelectorAll('.set-row').forEach((row, index) => {
-                row.querySelector('div').textContent = index + 1;
+                row.querySelector('.set-number-display').textContent = index + 1;
             });
         }
 
