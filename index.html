@@ -778,7 +778,7 @@
             errDiv.classList.add('hidden');
 
             try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -787,7 +787,10 @@
                     })
                 });
 
-                if (!response.ok) throw new Error('API Fehler');
+                if (!response.ok) {
+                    const errData = await response.json();
+                    throw new Error(errData.error?.message || 'API Fehler');
+                }
                 const data = await response.json();
                 const parsed = JSON.parse(data.candidates[0].content.parts[0].text);
 
@@ -1036,7 +1039,7 @@
                         return `Datum: ${l.date}, Übung: ${exName}, Max: ${l.maxWeight}kg, Vol: ${l.totalVolume}kg, BW-Modus: ${l.useBodyweight}, Sätze: [${setsStr}]`;
                     });
 
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -1045,7 +1048,10 @@
                     })
                 });
 
-                if (!response.ok) throw new Error('API Fehler');
+                if (!response.ok) {
+                    const errData = await response.json();
+                    throw new Error(errData.error?.message || 'API Fehler');
+                }
                 const data = await response.json();
                 content.innerHTML = marked.parse(data.candidates[0].content.parts[0].text);
                 container.classList.remove('hidden');
