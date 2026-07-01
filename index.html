@@ -586,6 +586,18 @@
         }
 
         // --- Workout Tracker ---
+        function mapToMainCategory(muscle) {
+            if (!muscle) return 'Sonstige';
+            const m = muscle.toLowerCase();
+            if (m.includes('brust') || m.includes('pect')) return 'Brust';
+            if (m.includes('rücken') || m.includes('lat') || m.includes('nacken') || m.includes('trapez') || m.includes('rhombo')) return 'Rücken';
+            if (m.includes('bein') || m.includes('quad') || m.includes('wade') || m.includes('glute') || m.includes('hamstring') || m.includes('po')) return 'Beine';
+            if (m.includes('schulter') || m.includes('delto')) return 'Schultern';
+            if (m.includes('arm') || m.includes('bizeps') || m.includes('trizeps') || m.includes('brach')) return 'Arme';
+            if (m.includes('bauch') || m.includes('core') || m.includes('rumpf') || m.includes('abs')) return 'Core/Bauch';
+            return 'Sonstige';
+        }
+
         function populateExerciseDropdowns() {
             const selects = [document.getElementById('exercise-select'), document.getElementById('chart-exercise-select')];
             selects.forEach(select => {
@@ -596,7 +608,7 @@
                 const grouped = {};
                 exercises.forEach(ex => {
                     const pm = ex.primaryMuscle ? ex.primaryMuscle.trim() : 'Sonstige';
-                    const groupName = (pm === 'Unbekannt' || pm === 'Keine' || !pm) ? 'Sonstige' : pm;
+                    const groupName = mapToMainCategory(pm);
                     if (!grouped[groupName]) grouped[groupName] = [];
                     grouped[groupName].push(ex);
                 });
