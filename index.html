@@ -592,12 +592,35 @@
                 if(!select) return;
                 const currentVal = select.value;
                 select.innerHTML = '';
+                
+                const grouped = {};
                 exercises.forEach(ex => {
-                    const opt = document.createElement('option');
-                    opt.value = ex.id;
-                    opt.textContent = `${ex.name} ${ex.primaryMuscle ? `(${ex.primaryMuscle})` : ''}`;
-                    select.appendChild(opt);
+                    const pm = ex.primaryMuscle ? ex.primaryMuscle.trim() : 'Sonstige';
+                    const groupName = (pm === 'Unbekannt' || pm === 'Keine' || !pm) ? 'Sonstige' : pm;
+                    if (!grouped[groupName]) grouped[groupName] = [];
+                    grouped[groupName].push(ex);
                 });
+
+                const sortedGroups = Object.keys(grouped).sort((a, b) => {
+                    if (a === 'Sonstige') return 1;
+                    if (b === 'Sonstige') return -1;
+                    return a.localeCompare(b);
+                });
+
+                sortedGroups.forEach(groupName => {
+                    const optgroup = document.createElement('optgroup');
+                    optgroup.label = groupName.toUpperCase();
+                    
+                    const sortedExs = grouped[groupName].sort((a, b) => a.name.localeCompare(b.name));
+                    sortedExs.forEach(ex => {
+                        const opt = document.createElement('option');
+                        opt.value = ex.id;
+                        opt.textContent = ex.name;
+                        optgroup.appendChild(opt);
+                    });
+                    select.appendChild(optgroup);
+                });
+
                 if (currentVal && exercises.find(e => e.id === currentVal)) select.value = currentVal;
             });
         }
